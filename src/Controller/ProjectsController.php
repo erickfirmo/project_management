@@ -45,9 +45,11 @@ class ProjectsController extends AppController
     {
         $project = $this->Projects->newEmptyEntity();
 
+        $query = $this->Projects->find();
+        $projects = $this->paginate($query);
+
         if ($this->request->is('post')) {
             $project = $this->Projects->patchEntity($project, $this->request->getData());
-            var_dump($project);
 
             if ($this->Projects->save($project)) {
                 $this->Flash->success(__('The project has been saved.'));
@@ -56,7 +58,8 @@ class ProjectsController extends AppController
             }
             $this->Flash->error(__('The project could not be saved. Please, try again.'));
         }
-        $this->set(compact('project'));
+        
+        $this->set(compact('project', 'projects'));
     }
 
     /**
@@ -100,4 +103,30 @@ class ProjectsController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+    public function getProject($id = null)
+    {
+        $this->request->allowMethod(['get', 'ajax']);
+
+        if (!$id) {
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode(['error' => 'ID inválido.']));
+        }
+    
+        $project = $this->Projects->find()
+            ->where(['id' => $id])
+            ->first();
+    
+        if (!$project) {
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode(['error' => 'Projeto não encontrado.']));
+        }
+    
+        return $this->response
+            ->withType('application/json')
+            ->withStringBody(json_encode($project));
+    }
+
 }

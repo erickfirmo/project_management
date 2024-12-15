@@ -61,7 +61,7 @@ return function (RouteBuilder $routes): void {
 
         $builder->connect('/projects/add', ['controller' => 'Projects', 'action' => 'add']);
 
-
+        $builder->connect('/projects/get-project/:id', ['controller' => 'Projects', 'action' => 'getProject'], ['pass' => ['id'], 'id' => '\d+']);
 
         /*
          * ...and connect the rest of 'Pages' controller's URLs.
