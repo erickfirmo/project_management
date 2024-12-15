@@ -75,6 +75,12 @@
             </div>
             <button type="submit" class="btn btn-dark">Atualizar</button>
         <?= $this->Form->end(); ?>
+        <hr>
+        <?= $this->Form->create(null, ['url' => '', 'id' => 'deleteTaskForm']) ?>
+        
+        <?= $this->Form->end(); ?>
+
+        <button type="button" class="btn btn-danger" onclick="if (confirm('Você tem certeza que deseja deletar?')) { document.getElementById('deleteTaskForm').submit() }">Deletar</button>
     </div>
 </div>
 <!-- Fim Sidebar right - Editar task -->

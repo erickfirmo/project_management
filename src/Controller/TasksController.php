@@ -103,7 +103,7 @@ class TasksController extends AppController
             $this->Flash->error(__('The task could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(['controller' => 'Projects', 'action' => 'tasks', $task->project_id]);
     }
 
     public function getTask($id = null)

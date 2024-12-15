@@ -196,6 +196,7 @@
             var deleteRoute = button.getAttribute('data-bs-deleteroute');
 
             document.querySelector('#updateTaskForm').setAttribute('action', editRoute);
+            document.querySelector('#deleteTaskForm').setAttribute('action', deleteRoute);
 
             fetch(getRoute, {
                 method: 'GET',
