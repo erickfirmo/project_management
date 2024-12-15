@@ -54,10 +54,11 @@ class ProjectsController extends AppController
             if (!$this->Projects->save($project)) {
                 $errors = $project->getErrors();
                 $this->Flash->error(__('The project could not be saved. Please, try again.'));
+            } else {
+                $this->Flash->success(__('The project has been saved.'));
             }
         }
 
-        $this->Flash->success(__('The project has been saved.'));
 
         return $this->redirect(['action' => 'index']);
 
@@ -76,7 +77,7 @@ class ProjectsController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $project = $this->Projects->patchEntity($project, $this->request->getData());
             if ($this->Projects->save($project)) {
-                $this->Flash->success(__('The project has been saved.'));
+                $this->Flash->success(__('The project has been updated.'));
 
                 return $this->redirect(['action' => 'index']);
             }
@@ -95,15 +96,23 @@ class ProjectsController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['post', 'delete', 'ajax']);
         $project = $this->Projects->get($id);
         if ($this->Projects->delete($project)) {
-            $this->Flash->success(__('The project has been deleted.'));
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode(['message' => __('Projeto deletado com sucesso!')]));
+            
         } else {
-            $this->Flash->error(__('The project could not be deleted. Please, try again.'));
+
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode(['error' => __('The project could not be deleted. Please, try again.')]));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode(['error' => __('The project could not be deleted. Please, try again.')]));
     }
 
     public function getProject($id = null)

@@ -3,6 +3,8 @@
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?= $this->Html->meta('csrfToken', $this->request->getAttribute('csrfToken')); ?>
+
     <title>Bootstrap demo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -34,7 +36,7 @@
                             <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal"
                             data-bs-editroute="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'edit', $project->id]) ?>"
                             data-bs-getroute="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'get-project', $project->id]) ?>">Editar</a></li>
-                            <li><a class="dropdown-item" href="#">Deletar</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="if (confirm('Você tem certeza que deseja deletar?')) { deleteRegister(this, '<?= $this->Url->build(['controller' => 'Projects', 'action' => 'delete', $project->id], ['fullBase' => true]) ?>') }">Deletar</a></li>
                         </ul>
                     </li>
                     <?php endforeach; ?>
@@ -45,7 +47,7 @@
 
                         <div class="form-group d-flex">
                             <?= $this->Form->control('name', ['label' => false, 'placeholder' => 'Digite o Nome do Projeto', 'class' => 'form-control']) ?>
-                            <button type="submit" class="btn btn-primary mx-2">
+                            <button type="submit" class="btn btn-dark mx-2">
                                 Adicionar
                             </button>
                         </div>
@@ -97,7 +99,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                        <button type="button" class="btn btn-primary" onclick="document.getElementById('modalForm').submit()">Salvar</button>
+                        <button type="button" class="btn btn-dark" onclick="document.getElementById('modalForm').submit()">Salvar</button>
                     </div>
                 </div>
             </div>
@@ -105,7 +107,7 @@
         <!-- End Modal -->
 
         <div class="container">
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Todos os projetos</button>
+            <button class="btn btn-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Todos os projetos</button>
             <?= $this->Flash->render() ?>
             <?= $this->fetch('content') ?>
         </div>
@@ -150,15 +152,41 @@
                 modalInputStartDate.value = data.start_date
                 modalInputEndDate.value = data.end_date
                 modalInputStatus.value = data.status
+                modalTitle.textContent = 'Editando projeto: ' + data.name
             })
             .catch(error => {
                 console.error('Erro:', error);
             });
 
 
-            modalTitle.textContent = 'Editando projeto: ' + editRoute
-            modalInputName.value = editRoute
         })
+
+        const csrfToken = document.querySelector('meta[name="csrfToken"]').getAttribute('content');
+
+        const deleteRegister = (el, deleteRoute) => {
+            console.log(el);  // Verifique se 'el' é um elemento DOM válido
+
+            fetch(deleteRoute, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-Token': csrfToken
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao deletar o projeto');
+                }
+                return response.json();
+            })
+            .then(data => {
+                el.parentElement.parentElement.parentElement.remove()
+                alert(data.message)
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+            });
+        }
     </script> 
 </body>
 </html>
