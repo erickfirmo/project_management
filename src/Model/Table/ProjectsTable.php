@@ -68,8 +68,8 @@ class ProjectsTable extends Table
 
         $validator
             ->date('start_date')
-            ->requirePresence('start_date', 'create')
-            ->notEmptyDate('start_date');
+            ->requirePresence('start_date', 'update')
+            ->allowEmptyDate('start_date');
 
         $validator
             ->date('end_date')
@@ -77,6 +77,7 @@ class ProjectsTable extends Table
 
         $validator
             ->scalar('status')
+            ->requirePresence('status', 'update')
             ->notEmptyString('status');
 
         return $validator;

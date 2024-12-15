@@ -44,22 +44,23 @@ class ProjectsController extends AppController
     public function add()
     {
         $project = $this->Projects->newEmptyEntity();
-
         $query = $this->Projects->find();
         $projects = $this->paginate($query);
 
         if ($this->request->is('post')) {
             $project = $this->Projects->patchEntity($project, $this->request->getData());
+            $project->status = 'ativo';
 
-            if ($this->Projects->save($project)) {
-                $this->Flash->success(__('The project has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+            if (!$this->Projects->save($project)) {
+                $errors = $project->getErrors();
+                $this->Flash->error(__('The project could not be saved. Please, try again.'));
             }
-            $this->Flash->error(__('The project could not be saved. Please, try again.'));
         }
-        
-        $this->set(compact('project', 'projects'));
+
+        $this->Flash->success(__('The project has been saved.'));
+
+        return $this->redirect(['action' => 'index']);
+
     }
 
     /**
