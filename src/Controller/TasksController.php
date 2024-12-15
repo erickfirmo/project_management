@@ -76,12 +76,14 @@ class TasksController extends AppController
             if ($this->Tasks->save($task)) {
                 $this->Flash->success(__('The task has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['controller' => 'Projects', 'action' => 'tasks', $task->project_id]);
             }
             $this->Flash->error(__('The task could not be saved. Please, try again.'));
         }
         $projects = $this->Tasks->Projects->find('list', limit: 200)->all();
-        $this->set(compact('task', 'projects'));
+
+        return $this->redirect(['controller' => 'Projects', 'action' => 'tasks', $task->project_id]);
+
     }
 
     /**
@@ -102,5 +104,30 @@ class TasksController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function getTask($id = null)
+    {
+        $this->request->allowMethod(['get', 'ajax']);
+
+        if (!$id) {
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode(['error' => 'ID inválido.']));
+        }
+    
+        $task = $this->Tasks->find()
+            ->where(['id' => $id])
+            ->first();
+    
+        if (!$task) {
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode(['error' => 'Projeto não encontrado.']));
+        }
+    
+        return $this->response
+            ->withType('application/json')
+            ->withStringBody(json_encode($task));
     }
 }

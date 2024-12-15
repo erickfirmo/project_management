@@ -66,12 +66,13 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/projects/tasks/:id', ['controller' => 'Projects', 'action' => 'tasks'], ['pass' => ['id'], 'id' => '\d+'])
             ->setMethods(['POST']);
 
-        $builder->connect('/projects/tasks/add', ['controller' => 'Tasks', 'action' => 'add'], ['pass' => ['project_id'], 'project_id' => '\d+'])
-            ->setMethods(['POST']);
-
         $builder->connect('/projects/delete/:id', ['controller' => 'Projects', 'action' => 'delete'], ['pass' => ['id'], 'id' => '\d+'])
             ->setMethods(['POST']);
 
+        $builder->connect('/projects/tasks/add', ['controller' => 'Tasks', 'action' => 'add'])
+            ->setMethods(['POST']);
+
+        $builder->connect('/tasks/get-task/:id', ['controller' => 'Tasks', 'action' => 'getTask'], ['pass' => ['id'], 'id' => '\d+']);
         /*
          * ...and connect the rest of 'Pages' controller's URLs.
          */

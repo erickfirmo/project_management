@@ -45,7 +45,7 @@
                         <?= $this->Form->create(null, ['url' => ['action' => 'add'], 'class' => 'form-horizontal']) ?>
 
                         <div class="form-group d-flex">
-                            <?= $this->Form->control('name', ['label' => false, 'placeholder' => 'Digite o Nome do Projeto', 'class' => 'form-control']) ?>
+                            <?= $this->Form->control('name', ['value' => '', 'label' => false, 'placeholder' => 'Digite o Nome do Projeto', 'class' => 'form-control']) ?>
                             <button type="submit" class="btn btn-dark mx-2">
                                 Adicionar
                             </button>
@@ -161,9 +161,8 @@
             })
 
         const csrfToken = document.querySelector('meta[name="csrfToken"]').getAttribute('content');
-
         const deleteRegister = (el, deleteRoute) => {
-            console.log(el);  // Verifique se 'el' é um elemento DOM válido
+            console.log(el);
 
             fetch(deleteRoute, {
                 method: 'POST',
@@ -186,6 +185,41 @@
                 console.error('Erro:', error);
             });
         }
+
+
+        const offcanvasRight = document.getElementById('offcanvasRight')
+        offcanvasRight.addEventListener('show.bs.offcanvas', event => {
+
+            var button = event.relatedTarget
+            var editRoute = button.getAttribute('data-bs-editroute');
+            var getRoute = button.getAttribute('data-bs-getroute');
+            var deleteRoute = button.getAttribute('data-bs-deleteroute');
+
+            document.querySelector('#updateTaskForm').setAttribute('action', editRoute);
+
+            fetch(getRoute, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar dados da tarefa');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.querySelector('#updateTaskForm #name').value = data.name;
+                document.querySelector('#updateTaskForm #description').value = data.description;
+                document.querySelector('#updateTaskForm #delivery-date').value = data.delivery_date;
+                document.querySelector('#updateTaskForm #priority').value = data.priority;
+                document.querySelector('#updateTaskForm #status').value = data.status;
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+            });
+        })
     </script> 
 </body>
 </html>
