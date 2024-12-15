@@ -26,7 +26,7 @@ class CreateProjects extends BaseMigration
                 'comment' => 'Descrição do projeto',
             ])
             ->addColumn('start_date', 'date', [
-                'null' => false,
+                'null' => true,
                 'comment' => 'Data de início do projeto',
             ])
             ->addColumn('end_date', 'date', [

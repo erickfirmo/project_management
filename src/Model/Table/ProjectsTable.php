@@ -62,7 +62,7 @@ class ProjectsTable extends Table
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
-        $validator
+        /*$validator
             ->scalar('description')
             ->allowEmptyString('description');
 
@@ -77,7 +77,7 @@ class ProjectsTable extends Table
 
         $validator
             ->scalar('status')
-            ->notEmptyString('status');
+            ->notEmptyString('status');*/
 
         return $validator;
     }
