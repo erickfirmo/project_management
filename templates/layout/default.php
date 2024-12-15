@@ -24,14 +24,13 @@
                 <ul class="navbar-nav">
                     <?php foreach ($projects as $project): ?>
                     <li class="nav-item dropdown mb-3">
-                        <a class="dropdown-toggle text-dark text-decoration-none"  data-bs-toggle="dropdown" aria-expanded="false">
-                            <?= h($project->name) ?>
-                            <span class="badge 
-                                <?= $project->status === 'ativo' ? 'bg-success' : 
-                                ($project->status === 'inativo' ? 'bg-secondary' : 'bg-info') ?>">
-                                <?= h($project->status) ?>
-                            </span>
-                        </a>
+                        <a href="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'tasks', $project->id], ['fullBase' => true]) ?>" class="text-dark text-decoration-none"><?= h($project->name) ?></a>
+                        <span class="badge 
+                            <?= $project->status === 'ativo' ? 'bg-success' : 
+                            ($project->status === 'inativo' ? 'bg-secondary' : 'bg-info') ?>">
+                            <?= h($project->status) ?>
+                        </span>
+                        <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></span>
                         <ul class="dropdown-menu dropdown-menu-dark">
                             <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal"
                             data-bs-editroute="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'edit', $project->id]) ?>"

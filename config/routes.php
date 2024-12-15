@@ -63,6 +63,12 @@ return function (RouteBuilder $routes): void {
 
         $builder->connect('/projects/get-project/:id', ['controller' => 'Projects', 'action' => 'getProject'], ['pass' => ['id'], 'id' => '\d+']);
 
+        $builder->connect('/projects/tasks/:id', ['controller' => 'Projects', 'action' => 'tasks'], ['pass' => ['id'], 'id' => '\d+'])
+            ->setMethods(['POST']);
+
+        $builder->connect('/projects/tasks/add', ['controller' => 'Tasks', 'action' => 'add'], ['pass' => ['project_id'], 'project_id' => '\d+'])
+            ->setMethods(['POST']);
+
         $builder->connect('/projects/delete/:id', ['controller' => 'Projects', 'action' => 'delete'], ['pass' => ['id'], 'id' => '\d+'])
             ->setMethods(['POST']);
 
