@@ -31,7 +31,9 @@
                             </span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-route="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'edit', $project->id]) ?>">Editar</a></li>
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                            data-bs-editroute="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'edit', $project->id]) ?>"
+                            data-bs-getroute="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'get-project', $project->id]) ?>">Editar</a></li>
                             <li><a class="dropdown-item" href="#">Deletar</a></li>
                         </ul>
                     </li>
@@ -47,6 +49,11 @@
                                 Adicionar
                             </button>
                         </div>
+
+                        <?= $this->Form->end(); ?>
+
+                        
+
 
                     </li>
                 </ul>
@@ -64,7 +71,7 @@
                     </div>
                     <div class="modal-body">
 
-                        <?= $this->Form->create($project, ['url' => '']) ?>
+                        <?= $this->Form->create(null, ['url' => '', 'id' => 'modalForm']) ?>
 
                             <div class="mb-3">
                                 <?= $this->Form->control('name', ['label' => 'Nome do Projeto', 'class' => 'form-control']) ?>
@@ -73,10 +80,10 @@
                                 <?= $this->Form->control('description', ['label' => 'Descrição', 'type' => 'textarea', 'class' => 'form-control']) ?>
                             </div>
                             <div class="mb-3">
-                                <?= $this->Form->control('data_inicio', ['label' => 'Data de Início', 'type' => 'date', 'class' => 'form-control']) ?>
+                                <?= $this->Form->control('start_date', ['label' => 'Data de Início', 'type' => 'date', 'class' => 'form-control']) ?>
                             </div>
                             <div class="mb-3">
-                                <?= $this->Form->control('data_fim', ['label' => 'Data de Término', 'type' => 'date', 'class' => 'form-control']) ?>
+                                <?= $this->Form->control('end_date', ['label' => 'Data de Término', 'type' => 'date', 'class' => 'form-control']) ?>
                             </div>
                             <div class="mb-3">
                                 <?= $this->Form->control('status', [
@@ -85,10 +92,12 @@
                                     'class' => 'form-control'
                                 ]) ?>
                             </div>
+                            <?= $this->Form->end(); ?>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                        <button type="button" class="btn btn-primary">Salvar</button>
+                        <button type="button" class="btn btn-primary" onclick="document.getElementById('modalForm').submit()">Salvar</button>
                     </div>
                 </div>
             </div>
@@ -106,23 +115,49 @@
     <!-- MODAL SCRIPTS -->
     <script>
         var exampleModal = document.getElementById('exampleModal')
-        exampleModal.addEventListener('show.bs.modal', function (event) {
-        // Button that triggered the modal
-        var button = event.relatedTarget
-        // Extract info from data-bs-* attributes
-        var editRoute = button.getAttribute('data-bs-route');
+            exampleModal.addEventListener('show.bs.modal', function (event) {
 
-        var modalForm = document.getElementById('#modalForm');
+            var button = event.relatedTarget
+            var editRoute = button.getAttribute('data-bs-editroute');
+            var getRoute = button.getAttribute('data-bs-getroute');
 
-        modalForm.setAttribute('action', editRoute);
+            var modalForm = document.getElementById('modalForm');
+
+            modalForm.setAttribute('action', editRoute);
+
+            var modalTitle = exampleModal.querySelector('.modal-title')
+            var modalInputName = exampleModal.querySelector('.modal-body #name')
+            var modalInputDesc = exampleModal.querySelector('.modal-body #description')
+            var modalInputStartDate = exampleModal.querySelector('.modal-body #start-date')
+            var modalInputEndDate = exampleModal.querySelector('.modal-body #end-date')
+            var modalInputStatus = exampleModal.querySelector('.modal-body #status')
+
+            fetch(getRoute, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar dados do projeto');
+                }
+                return response.json();
+            })
+            .then(data => {
+                modalInputName.value = data.name
+                modalInputDesc.value = data.description
+                modalInputStartDate.value = data.start_date
+                modalInputEndDate.value = data.end_date
+                modalInputStatus.value = data.status
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+            });
 
 
-        
-        var modalTitle = exampleModal.querySelector('.modal-title')
-        var modalInputName = exampleModal.querySelector('.modal-body input#name')
-
-        modalTitle.textContent = 'Editando projeto: ' + editRoute
-        modalInputName.value = editRoute
+            modalTitle.textContent = 'Editando projeto: ' + editRoute
+            modalInputName.value = editRoute
         })
     </script> 
 </body>

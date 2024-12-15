@@ -81,7 +81,8 @@ class ProjectsController extends AppController
             }
             $this->Flash->error(__('The project could not be saved. Please, try again.'));
         }
-        $this->set(compact('project'));
+        return $this->redirect(['action' => 'index']);
+
     }
 
     /**
