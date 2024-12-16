@@ -1,6 +1,16 @@
 <x-app-layout>
 <h1 class="text-center my-4">Lista de Projetos</h1>
 
+<?php
+    $session = $this->request->getSession();
+
+    $validationErrors = $session->read('ValidationErrors');
+    $formData = $session->read('FormData');
+
+    $session->delete('ValidationErrors');
+    $session->delete('FormData');
+?>
+
 <div class="container" x-data="projectsData()">
 
     <div class="row">
@@ -25,14 +35,16 @@
 
     <div class="row mb-3">
         <?= $this->Form->create(null, ['url' => ['action' => 'add'], 'class' => 'form-horizontal']) ?>
-
             <div class="form-group d-flex">
                 <?= $this->Form->control('name', ['value' => '', 'label' => false, 'placeholder' => 'Digite o Nome do Projeto', 'class' => 'form-control']) ?>
+                
                 <button type="submit" class="btn btn-dark mx-2">
                     Adicionar
                 </button>
             </div>
-
+            <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['name']) && $validationErrors['entity'] == 'Projects' && $validationErrors['action'] == 'add'): ?>
+                    <span class="text-danger"><?= reset($validationErrors['errors']['name']) ?></span>
+            <?php endif; ?>
         <?= $this->Form->end(); ?>
     </div>
 

@@ -57,6 +57,9 @@
 
                         <div class="form-group d-flex">
                             <?= $this->Form->control('name', ['value' => '', 'label' => false, 'placeholder' => 'Digite o Nome do Projeto', 'class' => 'form-control']) ?>
+                            <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['name']) && $validationErrors['entity'] == 'Projects' && $validationErrors['action'] == 'add'): ?>
+                                <span class="text-danger"><?= reset($validationErrors['errors']['name']) ?></span>
+                            <?php endif; ?>
                             <button type="submit" class="btn btn-dark mx-2">
                                 Adicionar
                             </button>
@@ -252,7 +255,7 @@
     </script> 
 
     <!-- Abre modal quando form for inválido -->
-     <?php if (!empty($validationErrors['errors'])  && $validationErrors['entity'] == 'Projects'): ?>
+     <?php if (!empty($validationErrors['errors']) && $validationErrors['entity'] == 'Projects' && $validationErrors['action'] == 'edit'): ?>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {

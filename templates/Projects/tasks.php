@@ -74,6 +74,9 @@
                         Adicionar
                     </button>
                 </div>
+                <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['name']) && $validationErrors['entity'] == 'Tasks' && $validationErrors['action'] == 'add'): ?>
+                        <span class="text-danger"><?= reset($validationErrors['errors']['name']) ?></span>
+                <?php endif; ?>
             <?= $this->Form->end(); ?>
         </div>
 
@@ -336,9 +339,9 @@
                 <?= $this->Form->control('name', [
                     'label' => 'Nome da Tarefa', 
                     'class' => 'form-control',
-                    'value' => !empty($formData['name']) ? $formData['name'] : ''
+                    'value' => !empty($formData['data']['name']) ? $formData['data']['name'] : ''
                 ]) ?>
-                <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['name']) && $validationErrors['entity'] == 'Tasks'): ?>
+                <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['name']) && $validationErrors['entity'] == 'Tasks' && $validationErrors['action'] == 'edit'): ?>
                     <span class="text-danger"><?= reset($validationErrors['errors']['name']) ?></span>
                 <?php endif; ?>
             </div>
@@ -348,7 +351,7 @@
                     'label' => 'Descrição', 
                     'type' => 'textarea', 
                     'class' => 'form-control',
-                    'value' => !empty($formData['description']) ? $formData['description'] : ''
+                    'value' => !empty($formData['data']['description']) ? $formData['data']['description'] : ''
                 ]) ?>
                 <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['description']) && $validationErrors['entity'] == 'Tasks'): ?>
                     <span class="text-danger"><?= reset($validationErrors['errors']['description']) ?></span>
@@ -360,7 +363,7 @@
                     'label' => 'Data de Entrega', 
                     'type' => 'date', 
                     'class' => 'form-control',
-                    'value' => !empty($formData['delivery_date']) ? $formData['delivery_date'] : ''
+                    'value' => !empty($formData['data']['delivery_date']) ? $formData['data']['delivery_date'] : ''
                 ]) ?>
                 <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['delivery_date']) && $validationErrors['entity'] == 'Tasks'): ?>
                     <span class="text-danger"><?= reset($validationErrors['errors']['delivery_date']) ?></span>
@@ -372,7 +375,7 @@
                     'label' => 'Prioridade',
                     'options' => ['alta' => 'Alta', 'média' => 'Média', 'baixa' => 'Baixa'],
                     'class' => 'form-control',
-                    'value' => !empty($formData['priority']) ? $formData['priority'] : ''
+                    'value' => !empty($formData['data']['priority']) ? $formData['data']['priority'] : ''
                 ]) ?>
                 <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['priority']) && $validationErrors['entity'] == 'Tasks'): ?>
                     <span class="text-danger"><?= reset($validationErrors['errors']['priority']) ?></span>
@@ -384,7 +387,7 @@
                     'label' => 'Status',
                     'options' => ['pendente' => 'Pendente', 'em andamento' => 'Em andamento', 'concluída' => 'Concluída'],
                     'class' => 'form-control',
-                    'value' => !empty($formData['status']) ? $formData['status'] : ''
+                    'value' => !empty($formData['data']['status']) ? $formData['data']['status'] : ''
                 ]) ?>
                 <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['status']) && $validationErrors['entity'] == 'Tasks'): ?>
                     <span class="text-danger"><?= reset($validationErrors['errors']['status']) ?></span>
@@ -404,7 +407,7 @@
 <!-- Fim Sidebar right - Editar task -->
 
 <!-- Abre sidebar right quando form for inválido -->
-<?php if (!empty($validationErrors['errors'])  && $validationErrors['entity'] == 'Tasks'): ?>
+<?php if (!empty($validationErrors['errors']) && $validationErrors['entity'] == 'Tasks' && $validationErrors['action'] == 'edit'): ?>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var myOffcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasRight'));
