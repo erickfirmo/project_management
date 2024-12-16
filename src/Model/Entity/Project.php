@@ -38,6 +38,8 @@ class Project extends Entity
         'tasks' => true,
     ];
 
+    protected array $_virtual = ['progress'];
+
     protected function _getProgress()
     {
         $tasksTable = TableRegistry::getTableLocator()->get('Tasks');

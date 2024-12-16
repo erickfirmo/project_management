@@ -115,6 +115,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <!-- MODAL SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.10.0/dist/cdn.min.js" defer></script>
+
     <script>
         var exampleModal = document.getElementById('exampleModal')
             exampleModal.addEventListener('show.bs.modal', function (event) {
@@ -189,39 +191,44 @@
 
 
         const offcanvasRight = document.getElementById('offcanvasRight')
-        offcanvasRight.addEventListener('show.bs.offcanvas', event => {
 
-            var button = event.relatedTarget
-            var editRoute = button.getAttribute('data-bs-editroute');
-            var getRoute = button.getAttribute('data-bs-getroute');
-            var deleteRoute = button.getAttribute('data-bs-deleteroute');
+        if(offcanvasRight) {
+            offcanvasRight.addEventListener('show.bs.offcanvas', event => {
 
-            document.querySelector('#updateTaskForm').setAttribute('action', editRoute);
-            document.querySelector('#deleteTaskForm').setAttribute('action', deleteRoute);
+                var button = event.relatedTarget
+                var editRoute = button.getAttribute('data-bs-editroute');
+                var getRoute = button.getAttribute('data-bs-getroute');
+                var deleteRoute = button.getAttribute('data-bs-deleteroute');
 
-            fetch(getRoute, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                },
+                document.querySelector('#updateTaskForm').setAttribute('action', editRoute);
+                document.querySelector('#deleteTaskForm').setAttribute('action', deleteRoute);
+
+                fetch(getRoute, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao buscar dados da tarefa');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.querySelector('#updateTaskForm #name').value = data.name;
+                    document.querySelector('#updateTaskForm #description').value = data.description;
+                    document.querySelector('#updateTaskForm #delivery-date').value = data.delivery_date;
+                    document.querySelector('#updateTaskForm #priority').value = data.priority;
+                    document.querySelector('#updateTaskForm #status').value = data.status;
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                });
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erro ao buscar dados da tarefa');
-                }
-                return response.json();
-            })
-            .then(data => {
-                document.querySelector('#updateTaskForm #name').value = data.name;
-                document.querySelector('#updateTaskForm #description').value = data.description;
-                document.querySelector('#updateTaskForm #delivery-date').value = data.delivery_date;
-                document.querySelector('#updateTaskForm #priority').value = data.priority;
-                document.querySelector('#updateTaskForm #status').value = data.status;
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-            });
-        })
+        }
     </script> 
+
+
 </body>
 </html>

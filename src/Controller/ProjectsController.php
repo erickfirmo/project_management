@@ -23,6 +23,119 @@ class ProjectsController extends AppController
         $this->set(compact('projects'));
     }
 
+
+    public function list()
+    {
+        $page = $this->request->getQuery('page') ? $this->request->getQuery('page') : 1;
+        $perPage = $this->request->getQuery('per_page') ? $this->request->getQuery('per_page') : 5;
+
+        $name = $this->request->getQuery('name');
+        $status = $this->request->getQuery('status');
+
+        $orderId = $this->request->getQuery('order_id');
+        $orderName = $this->request->getQuery('order_name');
+        $orderStatus = $this->request->getQuery('order_status');
+        $orderStartDate = $this->request->getQuery('order_start_date');
+        $orderEndDate = $this->request->getQuery('order_end_date');
+        $orderProgress = $this->request->getQuery('order_progress');
+
+        $filters = [];
+
+        if($name) {
+            $filters['Projects.name LIKE'] = "%$name%";
+        }
+
+        if($status) {
+            $filters['Projects.status'] = $status;
+        }
+
+        $allProjects = $this->Projects->find();
+
+        $query = $this->Projects->find()->select([
+            'id',
+            'name',
+            'description',
+            'start_date',
+            'end_date',
+            'status',
+            'progress' => $allProjects->func()->coalesce([
+                $allProjects->newExpr('(SUM(CASE WHEN Tasks.status = "concluída" THEN 1 ELSE 0 END) / COUNT(Tasks.id)) * 100'),
+                0
+            ]),
+        ])
+        ->leftJoinWith('Tasks')
+        ->group('Projects.id')
+        ->where($filters);
+        
+        $orders = [];
+
+        if($orderId) {
+            $orders['Projects.id'] = $orderId;
+        }
+
+        if($orderName) {
+            $orders['Projects.name'] = $orderName;
+        }
+
+        if($orderStatus) {
+            $orders["FIELD(Projects.status, 'ativo', 'concluído', 'inativo')"] = $orderStatus;
+        }
+
+        if($orderStartDate) {
+            $orders['Projects.start_date'] = $orderStartDate;
+        }
+
+        if($orderEndDate) {
+            $orders['Projects.end_start'] = $orderEndDate;
+        }
+
+        if($orderProgress) {
+            $orders['progress'] = $orderProgress;
+        }
+
+        if(empty($orders)) {
+            $query->order(['Projects.id' => 'DESC']);
+        }
+
+        $query->order($orders);            
+
+        $projects = $query->limit($perPage)
+            ->offset(($page - 1) * $perPage)
+            ->all();
+
+        $total = $allProjects->count();
+        $totalFiltered = $projects->count();
+
+        if (!empty($filters) && $totalFiltered > 0) {
+            $total = $totalFiltered;
+        }
+
+        $lastPage = $perPage ? ceil($total / $perPage) : null;
+
+        $links = $perPage ? range(1, $lastPage) : null;
+
+        $response = [
+            'status' => 200,
+            'message' => '',
+            'data' => [
+                'projects' => $projects,
+                'pagination' => [
+                    'total' => $total,
+                    'current_page' => $page,
+                    'per_page' => $perPage,
+                    'last_page' => $lastPage,
+                    'links' => $links,
+                    'previous' => $page > 1 ? $page - 1 : null,
+                    'next' => $page != $lastPage ? $page + 1 : null
+                ],
+            ]
+        ];
+
+        return $this->response
+                ->withType('application/json')
+                ->withStringBody(json_encode($response));
+    }
+
     /**
      * View method
      *

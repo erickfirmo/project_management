@@ -72,6 +72,9 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/projects/tasks/add', ['controller' => 'Tasks', 'action' => 'add'])
             ->setMethods(['POST']);
 
+
+        $builder->connect('/projects/list', ['controller' => 'Projects', 'action' => 'list']);
+
         $builder->connect('/tasks/get-task/:id', ['controller' => 'Tasks', 'action' => 'getTask'], ['pass' => ['id'], 'id' => '\d+']);
         /*
          * ...and connect the rest of 'Pages' controller's URLs.
