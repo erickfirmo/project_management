@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
+use Cake\ORM\TableRegistry;
 
 /**
  * Project Entity
@@ -36,4 +37,25 @@ class Project extends Entity
         'status' => true,
         'tasks' => true,
     ];
+
+    protected function _getProgress()
+    {
+        $tasksTable = TableRegistry::getTableLocator()->get('Tasks');
+
+        $totalTasks = $tasksTable->find()
+            ->where([
+                'project_id' => $this->id,
+            ])
+            ->count();
+
+        $completedTasks = $tasksTable->find()
+            ->where([
+                'project_id' => $this->id,
+                'status' => 'concluída',
+            ])
+            ->count();
+
+        return $totalTasks > 0 ? floor(($completedTasks / $totalTasks) * 100) : 0;
+    }
+
 }

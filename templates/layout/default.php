@@ -25,6 +25,7 @@
                     <?php foreach ($projects as $project): ?>
                     <li class="nav-item dropdown mb-3">
                         <a href="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'tasks', $project->id], ['fullBase' => true]) ?>" class="text-dark text-decoration-none"><?= h($project->name) ?></a>
+                        <span class="text-dark">(<?= h($project->progress) ?>%)</span>
                         <span class="badge 
                             <?= $project->status === 'ativo' ? 'bg-success' : 
                             ($project->status === 'inativo' ? 'bg-secondary' : 'bg-info') ?>">
