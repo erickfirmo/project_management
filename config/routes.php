@@ -57,23 +57,32 @@ return function (RouteBuilder $routes): void {
          */
         $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
 
+        /**
+         * Listagem de projetos
+         */
         $builder->connect('/projects', ['controller' => 'Projects', 'action' => 'index']);
 
         $builder->connect('/projects/add', ['controller' => 'Projects', 'action' => 'add']);
 
         $builder->connect('/projects/get-project/:id', ['controller' => 'Projects', 'action' => 'getProject'], ['pass' => ['id'], 'id' => '\d+']);
 
+        # get
         $builder->connect('/projects/tasks/:id', ['controller' => 'Projects', 'action' => 'tasks'], ['pass' => ['id'], 'id' => '\d+'])
             ->setMethods(['POST']);
 
         $builder->connect('/projects/delete/:id', ['controller' => 'Projects', 'action' => 'delete'], ['pass' => ['id'], 'id' => '\d+'])
             ->setMethods(['POST']);
 
+        # api
+        $builder->connect('/projects/list', ['controller' => 'Projects', 'action' => 'list']);
+
+
+
         $builder->connect('/projects/tasks/add', ['controller' => 'Tasks', 'action' => 'add'])
             ->setMethods(['POST']);
 
-
-        $builder->connect('/projects/list', ['controller' => 'Projects', 'action' => 'list']);
+        # api
+        $builder->connect('/tasks/list/:id', ['controller' => 'Tasks', 'action' => 'list'], ['pass' => ['id'], 'id' => '\d+']);
 
         $builder->connect('/tasks/get-task/:id', ['controller' => 'Tasks', 'action' => 'getTask'], ['pass' => ['id'], 'id' => '\d+']);
         /*

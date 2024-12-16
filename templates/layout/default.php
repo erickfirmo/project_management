@@ -195,7 +195,7 @@
         if(offcanvasRight) {
             offcanvasRight.addEventListener('show.bs.offcanvas', event => {
 
-                var button = event.relatedTarget
+                /*var button = event.relatedTarget
                 var editRoute = button.getAttribute('data-bs-editroute');
                 var getRoute = button.getAttribute('data-bs-getroute');
                 var deleteRoute = button.getAttribute('data-bs-deleteroute');
@@ -224,7 +224,7 @@
                 })
                 .catch(error => {
                     console.error('Erro:', error);
-                });
+                });*/
             })
         }
     </script> 

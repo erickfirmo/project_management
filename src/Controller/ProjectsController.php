@@ -145,38 +145,9 @@ class ProjectsController extends AppController
      */
     public function tasks($id = null)
     {
-        $name = $this->request->getQuery('name');
-        $status = $this->request->getQuery('status');
-        $deliveryStartDate = $this->request->getQuery('delivery_start_date');
-        $deliveryEndDate = $this->request->getQuery('delivery_end_date');
-
-        $filters = [];
-
-        if($name) {
-            $filters['Tasks.name LIKE'] = "%$name%";
-        }
-
-        if($status) {
-            $filters['Tasks.status'] = $status;
-        }
-
-        if($deliveryStartDate) {
-            $filters['Tasks.delivery_date >='] = $deliveryStartDate;
-        }
-
-        if($deliveryEndDate) {
-            $filters['Tasks.delivery_date <='] = $deliveryEndDate;
-        }
-
         $project = $this->Projects->get($id, contain: [
-            'Tasks' => function ($q) use ($filters) {
-                return $q->where($filters);
-            },
+            'Tasks',
         ]);
-
-
-
-
 
         $tasks = $project->tasks;
 

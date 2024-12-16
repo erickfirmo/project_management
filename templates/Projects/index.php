@@ -16,9 +16,24 @@
             </select>
 
         </div>
-        <div class="col-md-2 mb-4">
+        <div class="col-md-3 mb-3">
             <button x-on:click="clearFilters();" class="btn btn-light w-100">Limpar</button>
         </div>
+    </div>
+
+    <hr>
+
+    <div class="row mb-3">
+        <?= $this->Form->create(null, ['url' => ['action' => 'add'], 'class' => 'form-horizontal']) ?>
+
+            <div class="form-group d-flex">
+                <?= $this->Form->control('name', ['value' => '', 'label' => false, 'placeholder' => 'Digite o Nome do Projeto', 'class' => 'form-control']) ?>
+                <button type="submit" class="btn btn-dark mx-2">
+                    Adicionar
+                </button>
+            </div>
+
+        <?= $this->Form->end(); ?>
     </div>
 
     <table class="table table-striped table-bordered">
