@@ -47,19 +47,25 @@ class TasksController extends AppController
         $task = $this->Tasks->newEmptyEntity();
         if ($this->request->is('post')) {
             $task = $this->Tasks->patchEntity($task, $this->request->getData());
-            if ($this->Tasks->save($task)) {
-                $this->Flash->success(__('The task has been saved.'));
+            $project = $this->Tasks->Projects->get($task->project_id);
+
+            if ($project->status !== 'ativo') {
+                $this->request->getSession()->write('warningMessage', 'O projeto não possui o status "ativo" para esta ação.');
 
                 return $this->redirect(['controller' => 'Projects', 'action' => 'tasks', $task->project_id]);
             }
-            $this->Flash->error(__('The task could not be saved. Please, try again.'));
+
+            if ($this->Tasks->save($task)) {
+                $this->request->getSession()->write('successMessage', 'Tarefa salva com sucesso.');
+
+                return $this->redirect(['controller' => 'Projects', 'action' => 'tasks', $task->project_id]);
+            }
+            $this->Flash->error(__('A tarefa não pôde ser salva. Por favor, tente novamente.'));
 
             $this->request->getSession()->write('ValidationErrors', [ 'errors' => $task->getErrors(), 'entity' => 'Tasks', 'action' => 'add']);
             $this->request->getSession()->write('FormData', [ 'data' => $this->request->getData(), 'entity' => 'Tasks', 'action' => 'add']);
         }
-        $projects = $this->Tasks->Projects->find('list', limit: 200)->all();
-        #$this->set(compact('task', 'projects'));
-        
+        $projects = $this->Tasks->Projects->find('list', limit: 200)->all();        
 
         return $this->redirect(['controller' => 'Projects', 'action' => 'tasks', $task->project_id]);
     }
@@ -77,7 +83,7 @@ class TasksController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $task = $this->Tasks->patchEntity($task, $this->request->getData());
             if ($this->Tasks->save($task)) {
-                $this->Flash->success(__('The task has been saved.'));
+                $this->request->getSession()->write('successMessage', 'Tarefa atualizada com sucesso.');
 
                 return $this->redirect(['controller' => 'Projects', 'action' => 'tasks', $task->project_id]);
             }
@@ -85,7 +91,7 @@ class TasksController extends AppController
             $this->request->getSession()->write('ValidationErrors', [ 'errors' => $task->getErrors(), 'entity' => 'Tasks', 'action' => 'edit']);
             $this->request->getSession()->write('FormData', [ 'data' => $this->request->getData(), 'entity' => 'Tasks', 'action' => 'edit']);
 
-            $this->Flash->error(__('The task could not be saved. Please, try again.'));
+            $this->Flash->error(__('A tarefa não pôde ser salva. Por favor, tente novamente.'));
         }
         $projects = $this->Tasks->Projects->find('list', limit: 200)->all();
 

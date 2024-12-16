@@ -14,9 +14,13 @@
         <?php
             $session = $this->request->getSession();
 
+            $successMessage = $session->read('successMessage');
+            $warningMessage = $session->read('warningMessage');
             $validationErrors = $session->read('ValidationErrors');
             $formData = $session->read('FormData');
 
+            $session->delete('successMessage');
+            $session->delete('warningMessage');
             $session->delete('ValidationErrors');
             $session->delete('FormData');
         ?>
@@ -161,7 +165,32 @@
 
         <div class="container">
             <button class="btn btn-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Todos os projetos</button>
-            <?= $this->Flash->render() ?>
+            
+            <?php if ($error = $this->Flash->render()): ?>
+                <div class="alert alert-danger d-flex align-items-center mt-4" role="alert">
+                    <div>
+                        <?= $error ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($warningMessage): ?>
+                <div class="alert alert-warning d-flex align-items-center mt-4" role="alert">
+                    <div>
+                        <?= $warningMessage ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($successMessage): ?>
+                <div class="alert alert-success d-flex align-items-center mt-4" role="alert">
+                    <div>
+                        <?= $successMessage ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+
             <?= $this->fetch('content') ?>
         </div>
     </main>

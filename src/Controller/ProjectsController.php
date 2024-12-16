@@ -176,9 +176,10 @@ class ProjectsController extends AppController
                 $this->request->getSession()->write('ValidationErrors', [ 'errors' => $project->getErrors(), 'entity' => 'Projects', 'action' => 'add']);
                 $this->request->getSession()->write('FormData', [ 'data' => $this->request->getData(), 'entity' => 'Projects', 'action' => 'add']);
 
-                $this->Flash->error(__('The project could not be saved. Please, try again.'));
+                $this->Flash->error(__('O projeto não pôde ser salvo. Por favor, tente novamente.'));
             } else {
-                $this->Flash->success(__('The project has been saved.'));
+                $this->request->getSession()->write('successMessage', 'Projeto salvo com sucesso.');
+                
             }
         }
 
@@ -200,14 +201,14 @@ class ProjectsController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $project = $this->Projects->patchEntity($project, $this->request->getData());
             if ($this->Projects->save($project)) {
-                $this->Flash->success(__('The project has been updated.'));
+                $this->request->getSession()->write('successMessage', 'Projeto atualizado com sucesso.');
 
                 return $this->redirect(['action' => 'index']);
             }
             $this->request->getSession()->write('ValidationErrors', [ 'errors' => $project->getErrors(), 'entity' => 'Projects', 'action' => 'edit']);
             $this->request->getSession()->write('FormData', [ 'data' => $this->request->getData(), 'entity' => 'Projects', 'action' => 'edit']);
 
-            $this->Flash->error(__('The project could not be saved. Please, try again.'));
+            $this->Flash->error(__('O projeto não pôde ser salvo. Por favor, tente novamente.'));
         }
         return $this->redirect(['action' => 'index']);
 
