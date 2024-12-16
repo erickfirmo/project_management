@@ -57,29 +57,40 @@ class ProjectsTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->scalar('name')
-            ->maxLength('name', 255)
-            ->requirePresence('name', 'create')
-            ->notEmptyString('name');
+            ->scalar('name', 'O nome deve ser uma string.')
+            ->maxLength('name', 255, 'O nome não pode exceder 255 caracteres.')
+            ->requirePresence('name', 'create', 'O campo nome é obrigatório na criação.')
+            ->notEmptyString('name', 'O nome não pode estar vazio.');
 
         $validator
-            ->scalar('description')
-            ->allowEmptyString('description');
+            ->scalar('description', 'A descrição deve ser uma string.')
+            ->allowEmptyString('description', 'A descrição é opcional.');
 
         $validator
-            ->date('start_date')
-            ->requirePresence('start_date', 'update')
-            ->allowEmptyDate('start_date');
-
+            ->date('start_date', ['ymd'], 'A data de início deve ser uma data válida.')
+            ->requirePresence('start_date', 'update', 'A data de início é obrigatória para atualização.')
+            ->allowEmptyDate('start_date', 'A data de início é opcional.');
+        
         $validator
-            ->date('end_date')
-            ->allowEmptyDate('end_date');
+            ->date('end_date', ['ymd'], 'A data de término deve ser uma data válida.')
+            ->allowEmptyDate('end_date', 'A data de término é opcional.');
+        
 
         $validator
             ->scalar('status')
             ->requirePresence('status', 'update')
             ->notEmptyString('status');
-
+            $validator
+            ->add('end_date', 'custom', [
+                'rule' => function ($value, $context) {
+                    $startDate = $context['data']['start_date'] ?? null;
+                    if ($startDate && $value) {
+                        return strtotime($value) >= strtotime($startDate);
+                    }
+                    return true;
+                },
+                'message' => 'A data de término deve ser igual ou posterior à data de início.'
+            ]);
         return $validator;
     }
 }

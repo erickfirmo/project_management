@@ -58,30 +58,30 @@ class TasksTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->integer('project_id')
-            ->notEmptyString('project_id');
+            ->integer('project_id', 'O "ID do Projeto" deve ser um número inteiro.')
+            ->notEmptyString('project_id', 'O "ID do Projeto" não pode estar vazio.');
 
         $validator
-            ->scalar('name')
-            ->maxLength('name', 255)
-            ->requirePresence('name', 'create')
-            ->notEmptyString('name');
+            ->scalar('name', 'O nome deve ser uma string.')
+            ->maxLength('name', 255, 'O nome não pode exceder 255 caracteres.')
+            ->requirePresence('name', 'create', 'O nome é obrigatório na criação.')
+            ->notEmptyString('name', 'O nome não pode estar vazio.');
 
         $validator
-            ->scalar('description')
-            ->allowEmptyString('description');
+            ->scalar('description', 'A descrição deve ser uma string.')
+            ->allowEmptyString('description', 'A descrição é opcional.');
 
         $validator
-            ->date('delivery_date')
-            ->allowEmptyDate('delivery_date');
+            ->date('delivery_date', ['ymd'], 'A data de entrega deve ser uma data válida.')
+            ->allowEmptyDate('delivery_date', 'A data de entrega é opcional.');
 
         $validator
-            ->scalar('priority')
-            ->notEmptyString('priority');
+            ->scalar('priority', 'A prioridade deve ser uma string.')
+            ->notEmptyString('priority', 'A prioridade não pode estar vazia.');
 
         $validator
-            ->scalar('status')
-            ->notEmptyString('status');
+            ->scalar('status', 'O status deve ser uma string.')
+            ->notEmptyString('status', 'O status não pode estar vazio.');
 
         return $validator;
     }

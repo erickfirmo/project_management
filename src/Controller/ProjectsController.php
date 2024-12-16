@@ -173,7 +173,9 @@ class ProjectsController extends AppController
             $project->status = 'ativo';
 
             if (!$this->Projects->save($project)) {
-                $errors = $project->getErrors();
+                $this->request->getSession()->write('ValidationErrors', [ 'errors' => $project->getErrors(), 'entity' => 'Projects']);
+                $this->request->getSession()->write('FormData', [ 'data' => $this->request->getData(), 'entity' => 'Projects']);
+
                 $this->Flash->error(__('The project could not be saved. Please, try again.'));
             } else {
                 $this->Flash->success(__('The project has been saved.'));
@@ -202,6 +204,9 @@ class ProjectsController extends AppController
 
                 return $this->redirect(['action' => 'index']);
             }
+            $this->request->getSession()->write('ValidationErrors', [ 'errors' => $project->getErrors(), 'entity' => 'Projects']);
+            $this->request->getSession()->write('FormData', [ 'data' => $this->request->getData(), 'entity' => 'Projects']);
+
             $this->Flash->error(__('The project could not be saved. Please, try again.'));
         }
         return $this->redirect(['action' => 'index']);

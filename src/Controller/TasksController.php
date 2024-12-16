@@ -53,6 +53,9 @@ class TasksController extends AppController
                 return $this->redirect(['controller' => 'Projects', 'action' => 'tasks', $task->project_id]);
             }
             $this->Flash->error(__('The task could not be saved. Please, try again.'));
+            
+            $this->request->getSession()->write('ValidationErrors', [ 'errors' => $task->getErrors(), 'entity' => 'Tasks']);
+            $this->request->getSession()->write('FormData', [ 'data' => $this->request->getData(), 'entity' => 'Tasks']);
         }
         $projects = $this->Tasks->Projects->find('list', limit: 200)->all();
         #$this->set(compact('task', 'projects'));
@@ -78,6 +81,10 @@ class TasksController extends AppController
 
                 return $this->redirect(['controller' => 'Projects', 'action' => 'tasks', $task->project_id]);
             }
+
+            $this->request->getSession()->write('ValidationErrors', [ 'errors' => $task->getErrors(), 'entity' => 'Tasks']);
+            $this->request->getSession()->write('FormData', [ 'data' => $this->request->getData(), 'entity' => 'Tasks']);
+
             $this->Flash->error(__('The task could not be saved. Please, try again.'));
         }
         $projects = $this->Tasks->Projects->find('list', limit: 200)->all();

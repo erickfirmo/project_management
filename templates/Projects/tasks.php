@@ -1,6 +1,17 @@
 <x-app-layout>
     <h1 class="text-center my-4">Lista de Tarefas</h1>
 
+    <?php
+        $session = $this->request->getSession();
+
+        $validationErrors = $session->read('ValidationErrors');
+        $formData = $session->read('FormData');
+
+        $session->delete('ValidationErrors');
+        $session->delete('FormData');
+    ?>
+        
+
     <div class="container" x-data="tasksData(<?= $project->id ?>)">
 
         <div class="row">
@@ -322,28 +333,64 @@
     <div class="offcanvas-body">
         <?= $this->Form->create(null, ['url' => '', 'id' => 'updateTaskForm']) ?>
             <div class="mb-3">
-                <?= $this->Form->control('name', ['label' => 'Nome da Tarefa', 'class' => 'form-control']) ?>
+                <?= $this->Form->control('name', [
+                    'label' => 'Nome da Tarefa', 
+                    'class' => 'form-control',
+                    'value' => !empty($formData['name']) ? $formData['name'] : ''
+                ]) ?>
+                <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['name']) && $validationErrors['entity'] == 'Tasks'): ?>
+                    <span class="text-danger"><?= reset($validationErrors['errors']['name']) ?></span>
+                <?php endif; ?>
             </div>
+
             <div class="mb-3">
-                <?= $this->Form->control('description', ['label' => 'Descrição', 'type' => 'textarea', 'class' => 'form-control']) ?>
+                <?= $this->Form->control('description', [
+                    'label' => 'Descrição', 
+                    'type' => 'textarea', 
+                    'class' => 'form-control',
+                    'value' => !empty($formData['description']) ? $formData['description'] : ''
+                ]) ?>
+                <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['description']) && $validationErrors['entity'] == 'Tasks'): ?>
+                    <span class="text-danger"><?= reset($validationErrors['errors']['description']) ?></span>
+                <?php endif; ?>
             </div>
+
             <div class="mb-3">
-                <?= $this->Form->control('delivery_date', ['label' => 'Data de Entrega', 'type' => 'date', 'class' => 'form-control']) ?>
+                <?= $this->Form->control('delivery_date', [
+                    'label' => 'Data de Entrega', 
+                    'type' => 'date', 
+                    'class' => 'form-control',
+                    'value' => !empty($formData['delivery_date']) ? $formData['delivery_date'] : ''
+                ]) ?>
+                <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['delivery_date']) && $validationErrors['entity'] == 'Tasks'): ?>
+                    <span class="text-danger"><?= reset($validationErrors['errors']['delivery_date']) ?></span>
+                <?php endif; ?>
             </div>
+
             <div class="mb-3">
                 <?= $this->Form->control('priority', [
                     'label' => 'Prioridade',
                     'options' => ['alta' => 'Alta', 'média' => 'Média', 'baixa' => 'Baixa'],
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'value' => !empty($formData['priority']) ? $formData['priority'] : ''
                 ]) ?>
+                <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['priority']) && $validationErrors['entity'] == 'Tasks'): ?>
+                    <span class="text-danger"><?= reset($validationErrors['errors']['priority']) ?></span>
+                <?php endif; ?>
             </div>
+
             <div class="mb-3">
                 <?= $this->Form->control('status', [
                     'label' => 'Status',
                     'options' => ['pendente' => 'Pendente', 'em andamento' => 'Em andamento', 'concluída' => 'Concluída'],
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'value' => !empty($formData['status']) ? $formData['status'] : ''
                 ]) ?>
+                <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['status']) && $validationErrors['entity'] == 'Tasks'): ?>
+                    <span class="text-danger"><?= reset($validationErrors['errors']['status']) ?></span>
+                <?php endif; ?>
             </div>
+
             <button type="submit" class="btn btn-dark">Atualizar</button>
         <?= $this->Form->end(); ?>
         <hr>
@@ -355,5 +402,16 @@
     </div>
 </div>
 <!-- Fim Sidebar right - Editar task -->
+
+<!-- Abre sidebar right quando form for inválido -->
+<?php if (!empty($validationErrors['errors'])  && $validationErrors['entity'] == 'Tasks'): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var myOffcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasRight'));
+            myOffcanvas.show();
+        });
+    </script>
+<?php endif; ?>
+
 
 </x-app-layout>

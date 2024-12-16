@@ -10,6 +10,16 @@
 </head>
 <body>
     <main class="main">
+
+        <?php
+            $session = $this->request->getSession();
+
+            $validationErrors = $session->read('ValidationErrors');
+            $formData = $session->read('FormData');
+
+            $session->delete('ValidationErrors');
+            $session->delete('FormData');
+        ?>
         
 
         <!-- Sidebar Left -->
@@ -75,25 +85,65 @@
 
                         <?= $this->Form->create(null, ['url' => '', 'id' => 'modalForm']) ?>
 
-                            <div class="mb-3">
-                                <?= $this->Form->control('name', ['label' => 'Nome do Projeto', 'class' => 'form-control']) ?>
-                            </div>
-                            <div class="mb-3">
-                                <?= $this->Form->control('description', ['label' => 'Descrição', 'type' => 'textarea', 'class' => 'form-control']) ?>
-                            </div>
-                            <div class="mb-3">
-                                <?= $this->Form->control('start_date', ['label' => 'Data de Início', 'type' => 'date', 'class' => 'form-control']) ?>
-                            </div>
-                            <div class="mb-3">
-                                <?= $this->Form->control('end_date', ['label' => 'Data de Término', 'type' => 'date', 'class' => 'form-control']) ?>
-                            </div>
-                            <div class="mb-3">
-                                <?= $this->Form->control('status', [
-                                    'label' => 'Status',
-                                    'options' => ['ativo' => 'Ativo', 'inativo' => 'Inativo', 'concluído' => 'Concluído'],
-                                    'class' => 'form-control'
-                                ]) ?>
-                            </div>
+                        <div class="mb-3">
+                            <?= $this->Form->control('name', [
+                                'label' => 'Nome do Projeto', 
+                                'class' => 'form-control',
+                                'value' => !empty($formData['data']['name']) && $formData['entity'] == 'Projects' ? $formData['data']['name'] : ''
+                            ]) ?>
+                            <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['name']) && $validationErrors['entity'] == 'Projects'): ?>
+                                <span class="text-danger"><?= reset($validationErrors['errors']['name']) ?></span>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="mb-3">
+                            <?= $this->Form->control('description', [
+                                'label' => 'Descrição', 
+                                'type' => 'textarea', 
+                                'class' => 'form-control',
+                                'value' => !empty($formData['data']['description'])&& $formData['entity'] == 'Projects' ? $formData['data']['description'] : ''
+                            ]) ?>
+                            <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['description']) && $validationErrors['entity'] == 'Projects'): ?>
+                                <span class="text-danger"><?= reset($validationErrors['errors']['description']) ?></span>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="mb-3">
+                            <?= $this->Form->control('start_date', [
+                                'label' => 'Data de Início', 
+                                'type' => 'date', 
+                                'class' => 'form-control',
+                                'value' => !empty($formData['data']['start_date']) && $formData['entity'] == 'Projects' ? $formData['data']['start_date'] : ''
+                            ]) ?>
+                            <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['start_date']) && $validationErrors['entity'] == 'Projects'): ?>
+                                <span class="text-danger"><?= reset($validationErrors['errors']['start_date']) ?></span>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="mb-3">
+                            <?= $this->Form->control('end_date', [
+                                'label' => 'Data de Término', 
+                                'type' => 'date', 
+                                'class' => 'form-control',
+                                'value' => !empty($formData['data']['end_date']) && $formData['entity'] == 'Projects' ? $formData['data']['end_date'] : ''
+                            ]) ?>
+                            <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['end_date']) && $validationErrors['entity'] == 'Projects'): ?>
+                                <span class="text-danger"><?= reset($validationErrors['errors']['end_date']) ?></span>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="mb-3">
+                            <?= $this->Form->control('status', [
+                                'label' => 'Status',
+                                'options' => ['ativo' => 'Ativo', 'inativo' => 'Inativo', 'concluído' => 'Concluído'],
+                                'class' => 'form-control',
+                                'value' => !empty($formData['data']['status']) && $formData['entity'] == 'Projects' ? $formData['data']['status'] : ''
+                            ]) ?>
+                            <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['status']) && $validationErrors['entity'] == 'Projects'): ?>
+                                <span class="text-danger"><?= reset($validationErrors['errors']['status']) ?></span>
+                            <?php endif; ?>
+                        </div>
+
                         <?= $this->Form->end(); ?>
 
                     </div>
@@ -190,44 +240,28 @@
         }
 
 
+        /*
         const offcanvasRight = document.getElementById('offcanvasRight')
 
         if(offcanvasRight) {
             offcanvasRight.addEventListener('show.bs.offcanvas', event => {
 
-                /*var button = event.relatedTarget
-                var editRoute = button.getAttribute('data-bs-editroute');
-                var getRoute = button.getAttribute('data-bs-getroute');
-                var deleteRoute = button.getAttribute('data-bs-deleteroute');
-
-                document.querySelector('#updateTaskForm').setAttribute('action', editRoute);
-                document.querySelector('#deleteTaskForm').setAttribute('action', deleteRoute);
-
-                fetch(getRoute, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                    },
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Erro ao buscar dados da tarefa');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    document.querySelector('#updateTaskForm #name').value = data.name;
-                    document.querySelector('#updateTaskForm #description').value = data.description;
-                    document.querySelector('#updateTaskForm #delivery-date').value = data.delivery_date;
-                    document.querySelector('#updateTaskForm #priority').value = data.priority;
-                    document.querySelector('#updateTaskForm #status').value = data.status;
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                });*/
             })
         }
+        */
     </script> 
+
+    <!-- Abre modal quando form for inválido -->
+     <?php if (!empty($validationErrors['errors'])  && $validationErrors['entity'] == 'Projects'): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {
+            keyboard: false
+            });
+            myModal.show();
+        });
+    </script>
+    <?php endif; ?>
 
 
 </body>
