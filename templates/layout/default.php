@@ -9,23 +9,44 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
+
+<?php
+    $session = $this->request->getSession();
+
+    $successMessage = $session->read('successMessage');
+    $warningMessage = $session->read('warningMessage');
+    $validationErrors = $session->read('ValidationErrors');
+    $formData = $session->read('FormData');
+
+    $session->delete('successMessage');
+    $session->delete('warningMessage');
+    $session->delete('ValidationErrors');
+    $session->delete('FormData');
+?>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Gestão de Projetos</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <button class="btn btn-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Listar Projetos</button>
+
+                </li>
+                
+            </ul>
+            </div>
+        </div>
+    </nav>
+
     <main class="main">
 
-        <?php
-            $session = $this->request->getSession();
-
-            $successMessage = $session->read('successMessage');
-            $warningMessage = $session->read('warningMessage');
-            $validationErrors = $session->read('ValidationErrors');
-            $formData = $session->read('FormData');
-
-            $session->delete('successMessage');
-            $session->delete('warningMessage');
-            $session->delete('ValidationErrors');
-            $session->delete('FormData');
-        ?>
         
-
+        
+        
         <!-- Sidebar Left -->
         <div class="offcanvas offcanvas-start show" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
             <div class="offcanvas-header">
@@ -38,7 +59,7 @@
                 <ul class="navbar-nav">
                     <?php foreach ($projects as $project): ?>
                     <li class="nav-item dropdown mb-3">
-                        <a href="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'tasks', $project->id], ['fullBase' => true]) ?>" class="text-dark text-decoration-none"><?= h($project->name) ?></a>
+                        <a href="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'tasks', $project->id], ['fullBase' => true]) ?>" class="text-dark"><?= h($project->name) ?></a>
                         <span class="text-dark">(<?= h($project->progress) ?>%)</span>
                         <span class="badge 
                             <?= $project->status === 'ativo' ? 'bg-success' : 
@@ -164,7 +185,6 @@
         <!-- End Modal -->
 
         <div class="container">
-            <button class="btn btn-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Todos os projetos</button>
             
             <?php if ($error = $this->Flash->render()): ?>
                 <div class="alert alert-danger d-flex align-items-center mt-4" role="alert">
