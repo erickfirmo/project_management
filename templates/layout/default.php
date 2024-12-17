@@ -33,7 +33,7 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <button class="btn btn-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Listar Projetos</button>
+                    <a class="nav-link" href="/projects">Todos os Projetos</a>
 
                 </li>
                 
@@ -185,7 +185,8 @@
         <!-- End Modal -->
 
         <div class="container">
-            
+            <button class="btn btn-dark my-5" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Barra lateral</button>
+
             <?php if ($error = $this->Flash->render()): ?>
                 <div class="alert alert-danger d-flex align-items-center mt-4" role="alert">
                     <div>
