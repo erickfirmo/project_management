@@ -4,11 +4,11 @@
 <?php
     $session = $this->request->getSession();
 
+    $successMessage = $session->read('successMessage');
+    $warningMessage = $session->read('warningMessage');
     $validationErrors = $session->read('ValidationErrors');
     $formData = $session->read('FormData');
 
-    $session->delete('ValidationErrors');
-    $session->delete('FormData');
 ?>
 
 <div class="container" x-data="projectsData()">
