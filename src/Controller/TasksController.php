@@ -61,11 +61,9 @@ class TasksController extends AppController
                 return $this->redirect(['controller' => 'Projects', 'action' => 'tasks', $task->project_id]);
             }
             $this->Flash->error(__('A tarefa não pôde ser salva. Por favor, tente novamente.'));
-
             $this->request->getSession()->write('ValidationErrors', [ 'errors' => $task->getErrors(), 'entity' => 'Tasks', 'action' => 'add']);
             $this->request->getSession()->write('FormData', [ 'data' => $this->request->getData(), 'entity' => 'Tasks', 'action' => 'add']);
         }
-        $projects = $this->Tasks->Projects->find('list', limit: 200)->all();        
 
         return $this->redirect(['controller' => 'Projects', 'action' => 'tasks', $task->project_id]);
     }
@@ -87,13 +85,12 @@ class TasksController extends AppController
 
                 return $this->redirect(['controller' => 'Projects', 'action' => 'tasks', $task->project_id]);
             }
+            $this->Flash->error(__('A tarefa não pôde ser salva. Por favor, tente novamente.'));
 
             $this->request->getSession()->write('ValidationErrors', [ 'errors' => $task->getErrors(), 'entity' => 'Tasks', 'action' => 'edit']);
             $this->request->getSession()->write('FormData', [ 'data' => $this->request->getData(), 'entity' => 'Tasks', 'action' => 'edit']);
 
-            $this->Flash->error(__('A tarefa não pôde ser salva. Por favor, tente novamente.'));
         }
-        $projects = $this->Tasks->Projects->find('list', limit: 200)->all();
 
         return $this->redirect(['controller' => 'Projects', 'action' => 'tasks', $task->project_id]);
 

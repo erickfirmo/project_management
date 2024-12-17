@@ -165,24 +165,20 @@ class ProjectsController extends AppController
     public function add()
     {
         $project = $this->Projects->newEmptyEntity();
-        $query = $this->Projects->find();
-        $projects = $this->paginate($query);
-
         if ($this->request->is('post')) {
             $project = $this->Projects->patchEntity($project, $this->request->getData());
             $project->status = 'ativo';
 
-            if (!$this->Projects->save($project)) {
-                $this->request->getSession()->write('ValidationErrors', [ 'errors' => $project->getErrors(), 'entity' => 'Projects', 'action' => 'add']);
-                $this->request->getSession()->write('FormData', [ 'data' => $this->request->getData(), 'entity' => 'Projects', 'action' => 'add']);
-
-                $this->Flash->error(__('O projeto não pôde ser salvo. Por favor, tente novamente.'));
-            } else {
+            if ($this->Projects->save($project)) {
                 $this->request->getSession()->write('successMessage', 'Projeto salvo com sucesso.');
-                
-            }
-        }
 
+                return $this->redirect(['action' => 'index']);
+
+            }
+            $this->Flash->error(__('O projeto não pôde ser salvo. Por favor, tente novamente.'));
+            $this->request->getSession()->write('ValidationErrors', [ 'errors' => $project->getErrors(), 'entity' => 'Projects', 'action' => 'add']);
+            $this->request->getSession()->write('FormData', [ 'data' => $this->request->getData(), 'entity' => 'Projects', 'action' => 'add']);
+        }
 
         return $this->redirect(['action' => 'index']);
 
@@ -205,10 +201,11 @@ class ProjectsController extends AppController
 
                 return $this->redirect(['action' => 'index']);
             }
+            $this->Flash->error(__('O projeto não pôde ser salvo. Por favor, tente novamente.'));
+
             $this->request->getSession()->write('ValidationErrors', [ 'errors' => $project->getErrors(), 'entity' => 'Projects', 'action' => 'edit']);
             $this->request->getSession()->write('FormData', [ 'data' => $this->request->getData(), 'entity' => 'Projects', 'action' => 'edit']);
 
-            $this->Flash->error(__('O projeto não pôde ser salvo. Por favor, tente novamente.'));
         }
         return $this->redirect(['action' => 'index']);
 
