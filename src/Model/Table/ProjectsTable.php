@@ -70,7 +70,7 @@ class ProjectsTable extends Table
             ->date('start_date', ['ymd'], 'A data de início deve ser uma data válida.')
             ->requirePresence('start_date', 'update', 'A data de início é obrigatória para atualização.')
             ->allowEmptyDate('start_date', 'A data de início é opcional.');
-            
+        
         $validator
             ->scalar('status')
             ->requirePresence('status', 'update')
@@ -78,7 +78,6 @@ class ProjectsTable extends Table
             
         $validator
             ->date('end_date', ['ymd'], 'A data de término deve ser uma data válida.')
-            ->allowEmptyDate('end_date', 'A data de término é opcional.')
             ->add('end_date', 'custom', [
                 'rule' => function ($value, $context) {
                     $startDate = $context['data']['start_date'] ?? null;
@@ -89,7 +88,7 @@ class ProjectsTable extends Table
                 },
                 'message' => 'A data de término deve ser igual ou posterior à data de início.'
             ]);
-
+            
         return $validator;
     }
 }

@@ -311,6 +311,11 @@
     </script>
     <?php endif; ?>
 
-
+    <?php
+        $session->delete('successMessage');
+        $session->delete('warningMessage');
+        $session->delete('ValidationErrors');
+        $session->delete('FormData');
+    ?>
 </body>
 </html>

@@ -9,6 +9,7 @@
     $validationErrors = $session->read('ValidationErrors');
     $formData = $session->read('FormData');
 
+    
 ?>
 
 <div class="container" x-data="projectsData()">
