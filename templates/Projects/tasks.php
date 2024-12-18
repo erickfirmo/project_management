@@ -8,11 +8,6 @@
         $warningMessage = $session->read('warningMessage');
         $validationErrors = $session->read('ValidationErrors');
         $formData = $session->read('FormData');
-    
-        $session->delete('successMessage');
-        $session->delete('warningMessage');
-        $session->delete('ValidationErrors');
-        $session->delete('FormData');
     ?>
         
 
