@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Traits\ApiPagination;
+
 /**
  * Projects Controller
  *
@@ -10,6 +12,7 @@ namespace App\Controller;
  */
 class ProjectsController extends AppController
 {
+    use ApiPagination;
     /**
      * Index method
      *
@@ -106,28 +109,14 @@ class ProjectsController extends AppController
         $total = $allProjects->count();
         $totalFiltered = $projects->count();
 
-        if (!empty($filters) && $totalFiltered > 0) {
-            $total = $totalFiltered;
-        }
-
-        $lastPage = $perPage ? ceil($total / $perPage) : null;
-
-        $links = $perPage ? range(1, $lastPage) : null;
+        $apiPagination = $this->apiPagination($total, $totalFiltered, $perPage, $page);
 
         $response = [
             'status' => 200,
             'message' => '',
             'data' => [
                 'projects' => $projects,
-                'pagination' => [
-                    'total' => $total,
-                    'current_page' => $page,
-                    'per_page' => $perPage,
-                    'last_page' => $lastPage,
-                    'links' => $links,
-                    'previous' => $page > 1 ? $page - 1 : null,
-                    'next' => $page != $lastPage ? $page + 1 : null
-                ],
+                'pagination' => $apiPagination
             ]
         ];
 
