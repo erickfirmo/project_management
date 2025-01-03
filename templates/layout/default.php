@@ -4,7 +4,6 @@
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= $this->Html->meta('csrfToken', $this->request->getAttribute('csrfToken')); ?>
-
     <title>Gestão de Projetos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -12,172 +11,158 @@
 
 <?php
     $session = $this->request->getSession();
-
     $successMessage = $session->read('successMessage');
     $warningMessage = $session->read('warningMessage');
     $validationErrors = $session->read('ValidationErrors');
     $formData = $session->read('FormData');
 ?>
 
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Gestão de Projetos</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Gestão de Projetos</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" href="/projects">Todos os Projetos</a>
-
                 </li>
-                
             </ul>
-            </div>
         </div>
-    </nav>
-
-    <main class="main">
-
-        
-        
-        
-        <!-- Sidebar Left -->
-        <div class="offcanvas offcanvas-start show" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasScrollingLabel">GESTÃO DE PROJETOS</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body">
-
-                <h6 class="mb-4">Meus Projetos</h6>
-                <ul class="navbar-nav">
-                    <?php foreach ($projects as $project): ?>
-                    <li class="nav-item dropdown mb-3">
-                        <a href="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'tasks', $project->id], ['fullBase' => true]) ?>" class="text-dark"><?= h($project->name) ?></a>
-                        <span class="text-dark">(<?= h($project->progress) ?>%)</span>
-                        <span class="badge 
-                            <?= $project->status === 'ativo' ? 'bg-success' : 
-                            ($project->status === 'inativo' ? 'bg-secondary' : 'bg-info') ?>">
-                            <?= h($project->status) ?>
-                        </span>
-                        <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></span>
-                        <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                            data-bs-editroute="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'edit', $project->id]) ?>"
-                            data-bs-getroute="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'get-project', $project->id]) ?>">Editar</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="if (confirm('Você tem certeza que deseja deletar?')) { deleteRegister(this, '<?= $this->Url->build(['controller' => 'Projects', 'action' => 'delete', $project->id], ['fullBase' => true]) ?>') }">Deletar</a></li>
-                        </ul>
-                    </li>
-                    <?php endforeach; ?>
-
-                    <li class="nav-item dropdown">
-
-                        <?= $this->Form->create(null, ['url' => ['action' => 'add'], 'class' => 'form-horizontal']) ?>
-
-                        <div class="form-group d-flex">
-                            <?= $this->Form->control('name', ['value' => '', 'label' => false, 'placeholder' => 'Digite o Nome do Projeto', 'class' => 'form-control']) ?>
-                            <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['name']) && $validationErrors['entity'] == 'Projects' && $validationErrors['action'] == 'add'): ?>
-                                <span class="text-danger"><?= reset($validationErrors['errors']['name']) ?></span>
-                            <?php endif; ?>
-                            <button type="submit" class="btn btn-dark mx-2">
-                                Adicionar
-                            </button>
-                        </div>
-
-                        <?= $this->Form->end(); ?>
-
-                        
-
-
-                    </li>
-                </ul>
-            </div>
+    </div>
+</nav>
+<main class="main">
+    <!-- Sidebar Left (edição de tasks) -->
+    <div class="offcanvas offcanvas-start show" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">GESTÃO DE PROJETOS</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <!-- End Siderbar Left -->
+        <div class="offcanvas-body">
+            <h6 class="mb-4">Meus Projetos</h6>
+            <ul class="navbar-nav">
+                <?php foreach ($projects as $project): ?>
+                <li class="nav-item dropdown mb-3">
+                    <a href="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'tasks', $project->id], ['fullBase' => true]) ?>" class="text-dark"><?= h($project->name) ?></a>
+                    <span class="text-dark">(<?= h($project->progress) ?>%)</span>
+                    <span class="badge 
+                        <?= $project->status === 'ativo' ? 'bg-success' : 
+                        ($project->status === 'inativo' ? 'bg-secondary' : 'bg-info') ?>">
+                        <?= h($project->status) ?>
+                    </span>
+                    <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></span>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                        data-bs-editroute="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'edit', $project->id]) ?>"
+                        data-bs-getroute="<?= $this->Url->build(['controller' => 'Projects', 'action' => 'get-project', $project->id]) ?>">Editar</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="if (confirm('Você tem certeza que deseja deletar?')) { deleteRegister(this, '<?= $this->Url->build(['controller' => 'Projects', 'action' => 'delete', $project->id], ['fullBase' => true]) ?>') }">Deletar</a></li>
+                    </ul>
+                </li>
+                <?php endforeach; ?>
 
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Editando projeto</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <li class="nav-item dropdown">
+
+                    <?= $this->Form->create(null, ['url' => ['action' => 'add'], 'class' => 'form-horizontal']) ?>
+
+                    <div class="form-group d-flex">
+                        <?= $this->Form->control('name', ['value' => '', 'label' => false, 'placeholder' => 'Digite o Nome do Projeto', 'class' => 'form-control']) ?>
+                        <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['name']) && $validationErrors['entity'] == 'Projects' && $validationErrors['action'] == 'add'): ?>
+                            <span class="text-danger"><?= reset($validationErrors['errors']['name']) ?></span>
+                        <?php endif; ?>
+                        <button type="submit" class="btn btn-dark mx-2">
+                            Adicionar
+                        </button>
                     </div>
-                    <div class="modal-body">
+                    <?= $this->Form->end(); ?>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- End Siderbar Left -->
 
-                        <?= $this->Form->create(null, ['url' => '', 'id' => 'modalForm']) ?>
+    <!-- Modal (edição de projetos) -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Editando projeto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
 
-                        <div class="mb-3">
-                            <?= $this->Form->control('name', [
-                                'label' => 'Nome do Projeto', 
-                                'class' => 'form-control',
-                                'value' => !empty($formData['data']['name']) && $formData['entity'] == 'Projects' ? $formData['data']['name'] : ''
-                            ]) ?>
-                            <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['name']) && $validationErrors['entity'] == 'Projects'): ?>
-                                <span class="text-danger"><?= reset($validationErrors['errors']['name']) ?></span>
-                            <?php endif; ?>
-                        </div>
+                    <?= $this->Form->create(null, ['url' => '', 'id' => 'modalForm']) ?>
 
-                        <div class="mb-3">
-                            <?= $this->Form->control('description', [
-                                'label' => 'Descrição', 
-                                'type' => 'textarea', 
-                                'class' => 'form-control',
-                                'value' => !empty($formData['data']['description'])&& $formData['entity'] == 'Projects' ? $formData['data']['description'] : ''
-                            ]) ?>
-                            <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['description']) && $validationErrors['entity'] == 'Projects'): ?>
-                                <span class="text-danger"><?= reset($validationErrors['errors']['description']) ?></span>
-                            <?php endif; ?>
-                        </div>
-
-                        <div class="mb-3">
-                            <?= $this->Form->control('start_date', [
-                                'label' => 'Data de Início', 
-                                'type' => 'date', 
-                                'class' => 'form-control',
-                                'value' => !empty($formData['data']['start_date']) && $formData['entity'] == 'Projects' ? $formData['data']['start_date'] : ''
-                            ]) ?>
-                            <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['start_date']) && $validationErrors['entity'] == 'Projects'): ?>
-                                <span class="text-danger"><?= reset($validationErrors['errors']['start_date']) ?></span>
-                            <?php endif; ?>
-                        </div>
-
-                        <div class="mb-3">
-                            <?= $this->Form->control('end_date', [
-                                'label' => 'Data de Término', 
-                                'type' => 'date', 
-                                'class' => 'form-control',
-                                'value' => !empty($formData['data']['end_date']) && $formData['entity'] == 'Projects' ? $formData['data']['end_date'] : ''
-                            ]) ?>
-                            <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['end_date']) && $validationErrors['entity'] == 'Projects'): ?>
-                                <span class="text-danger"><?= reset($validationErrors['errors']['end_date']) ?></span>
-                            <?php endif; ?>
-                        </div>
-
-                        <div class="mb-3">
-                            <?= $this->Form->control('status', [
-                                'label' => 'Status',
-                                'options' => ['ativo' => 'Ativo', 'inativo' => 'Inativo', 'concluído' => 'Concluído'],
-                                'class' => 'form-control',
-                                'value' => !empty($formData['data']['status']) && $formData['entity'] == 'Projects' ? $formData['data']['status'] : ''
-                            ]) ?>
-                            <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['status']) && $validationErrors['entity'] == 'Projects'): ?>
-                                <span class="text-danger"><?= reset($validationErrors['errors']['status']) ?></span>
-                            <?php endif; ?>
-                        </div>
-
-                        <?= $this->Form->end(); ?>
-
+                    <div class="mb-3">
+                        <?= $this->Form->control('name', [
+                            'label' => 'Nome do Projeto', 
+                            'class' => 'form-control',
+                            'value' => !empty($formData['data']['name']) && $formData['entity'] == 'Projects' ? $formData['data']['name'] : ''
+                        ]) ?>
+                        <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['name']) && $validationErrors['entity'] == 'Projects'): ?>
+                            <span class="text-danger"><?= reset($validationErrors['errors']['name']) ?></span>
+                        <?php endif; ?>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                        <button type="button" class="btn btn-dark" onclick="document.getElementById('modalForm').submit()">Salvar</button>
+
+                    <div class="mb-3">
+                        <?= $this->Form->control('description', [
+                            'label' => 'Descrição', 
+                            'type' => 'textarea', 
+                            'class' => 'form-control',
+                            'value' => !empty($formData['data']['description'])&& $formData['entity'] == 'Projects' ? $formData['data']['description'] : ''
+                        ]) ?>
+                        <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['description']) && $validationErrors['entity'] == 'Projects'): ?>
+                            <span class="text-danger"><?= reset($validationErrors['errors']['description']) ?></span>
+                        <?php endif; ?>
                     </div>
+
+                    <div class="mb-3">
+                        <?= $this->Form->control('start_date', [
+                            'label' => 'Data de Início', 
+                            'type' => 'date', 
+                            'class' => 'form-control',
+                            'value' => !empty($formData['data']['start_date']) && $formData['entity'] == 'Projects' ? $formData['data']['start_date'] : ''
+                        ]) ?>
+                        <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['start_date']) && $validationErrors['entity'] == 'Projects'): ?>
+                            <span class="text-danger"><?= reset($validationErrors['errors']['start_date']) ?></span>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="mb-3">
+                        <?= $this->Form->control('end_date', [
+                            'label' => 'Data de Término', 
+                            'type' => 'date', 
+                            'class' => 'form-control',
+                            'value' => !empty($formData['data']['end_date']) && $formData['entity'] == 'Projects' ? $formData['data']['end_date'] : ''
+                        ]) ?>
+                        <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['end_date']) && $validationErrors['entity'] == 'Projects'): ?>
+                            <span class="text-danger"><?= reset($validationErrors['errors']['end_date']) ?></span>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="mb-3">
+                        <?= $this->Form->control('status', [
+                            'label' => 'Status',
+                            'options' => ['ativo' => 'Ativo', 'inativo' => 'Inativo', 'concluído' => 'Concluído'],
+                            'class' => 'form-control',
+                            'value' => !empty($formData['data']['status']) && $formData['entity'] == 'Projects' ? $formData['data']['status'] : ''
+                        ]) ?>
+                        <?php if (!empty($validationErrors['errors']) && isset($validationErrors['errors']['status']) && $validationErrors['entity'] == 'Projects'): ?>
+                            <span class="text-danger"><?= reset($validationErrors['errors']['status']) ?></span>
+                        <?php endif; ?>
+                    </div>
+
+                    <?= $this->Form->end(); ?>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-dark" onclick="document.getElementById('modalForm').submit()">Salvar</button>
                 </div>
             </div>
         </div>
-        <!-- End Modal -->
+    </div>
+    <!-- End Modal -->
 
         <div class="container">
             <button class="btn btn-dark my-5" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Barra lateral</button>
@@ -286,17 +271,6 @@
                 console.error('Erro:', error);
             });
         }
-
-
-        /*
-        const offcanvasRight = document.getElementById('offcanvasRight')
-
-        if(offcanvasRight) {
-            offcanvasRight.addEventListener('show.bs.offcanvas', event => {
-
-            })
-        }
-        */
     </script> 
 
     <!-- Abre modal quando form for inválido -->
